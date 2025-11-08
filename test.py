@@ -330,6 +330,7 @@ def Inference(net, inputs):
         net.eval()
         Frames = inputs['rainfall'].shape[1]
 
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         prev_encoder_state1, prev_encoder_state2, prev_encoder_state3, \
             prev_decoder_state1, prev_decoder_state2, prev_decoder_state3 = initialize_states(
                 device)
@@ -368,6 +369,7 @@ def load_net(args):
 
     # Load the model
     print("loading model...")
+    args.save_model_dir = "./exp/20251108_084557_728796/save_model"
     model_names = os.listdir(args.save_model_dir)
     model_name = sorted(
         model_names,
@@ -382,6 +384,7 @@ def load_net(args):
         else:
             state_dict[k] = v
     net.load_state_dict(state_dict)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     net = net.to(device)
 
     return net
@@ -399,6 +402,7 @@ def test(args, device, testLoader, cur_epoch=99999, flood_max=5000):
     - flood_max: Maximum scale value for normalization.
     """
     # Set random seeds for reproducibility
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     random_seed = args.random_seed
     np.random.seed(random_seed)
     torch.manual_seed(random_seed)

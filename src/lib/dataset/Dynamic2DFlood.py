@@ -115,8 +115,10 @@ class Dynamic2DFlood(data.Dataset):
         """
         # Extract and convert data into tensors
         # Convert from meters to millimeters
-        absolute_DEM = torch.from_numpy(
-            event_data["absolute_DEM"]).float() * 1000
+        # absolute_DSM = torch.from_numpy(
+        #     event_data["absolute_DSM"]).float() * 1000
+        absolute_DSM = torch.from_numpy(
+            event_data["absolute_DSM"]).float() * 1000
         impervious = torch.from_numpy(event_data["impervious"]).float()
         manhole = torch.from_numpy(event_data["manhole"]).float()
         rainfall = torch.from_numpy(event_data["rainfall"]).float()
@@ -130,7 +132,7 @@ class Dynamic2DFlood(data.Dataset):
         cumsum_rainfall = torch.cumsum(rainfall, dim=0)
 
         # Reshape data for model input
-        absolute_DEM = absolute_DEM.unsqueeze(0).unsqueeze(
+        absolute_DSM = absolute_DSM.unsqueeze(0).unsqueeze(
             0)  # Add batch and channel dimensions
         impervious = impervious.unsqueeze(0).unsqueeze(0)
         manhole = manhole.unsqueeze(0).unsqueeze(0)
@@ -139,9 +141,9 @@ class Dynamic2DFlood(data.Dataset):
             1).unsqueeze(1).unsqueeze(1)
 
         return {
-            "absolute_DEM": absolute_DEM,
-            "max_DEM": absolute_DEM.max(),
-            "min_DEM": absolute_DEM.min(),
+            "absolute_DSM": absolute_DSM,
+            "max_DEM": absolute_DSM.max(),
+            "min_DEM": absolute_DSM.min(),
             "impervious": impervious,
             "manhole": manhole,
             "rainfall": rainfall,
@@ -207,13 +209,13 @@ def preprocess_inputs(t, inputs, device, nums=30):
     - Tensor of concatenated normalized inputs.
     """
     # Extract and normalize input data tensors
-    absolute_DEM = MinMaxScaler(
-        inputs["absolute_DEM"], inputs["max_DEM"][0], inputs["min_DEM"][0])
+    absolute_DSM = MinMaxScaler(
+        inputs["absolute_DSM"], inputs["max_DEM"][0], inputs["min_DEM"][0])
     impervious = MinMaxScaler(inputs["impervious"], 0.95, 0.05)
     manhole = MinMaxScaler(inputs["manhole"], 1, 0)
 
     # Retrieve and normalize past rainfall data
-    H, W = inputs["absolute_DEM"].shape[-2:]
+    H, W = inputs["absolute_DSM"].shape[-2:]
     rainfall = get_past_rainfall(inputs["rainfall"], t, nums, H, W)
     cumsum_rainfall = get_past_rainfall(
         inputs["cumsum_rainfall"], t, nums, H, W)
@@ -224,7 +226,7 @@ def preprocess_inputs(t, inputs, device, nums=30):
 
     # Concatenate all processed inputs along the channel dimension and move to specified device
     processed_inputs = torch.cat(
-        [norm_rainfall, norm_cumsum_rainfall, absolute_DEM, impervious, manhole],
+        [norm_rainfall, norm_cumsum_rainfall, absolute_DSM, impervious, manhole],
         dim=2,
     ).to(device=device, dtype=torch.float32)
 

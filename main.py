@@ -903,12 +903,13 @@ def main(exp_root, timestamp_save_path, local_rank, rank):
 
     try:
         # Begin the training process
-        train(args, device, local_rank, rank,
-              trainLoader, train_sampler, testLoader)
+        # train(args, device, local_rank, rank,
+        #       trainLoader, train_sampler, testLoader)
 
         # Optionally execute testing if specified in arguments
         if rank in {-1, 0} and args.test:
-            test(args, device, testLoader, args.epochs, upload=args.upload)
+            # test(args, device, testLoader, args.epochs, upload=args.upload)
+            test(args, device, testLoader, args.epochs)
 
         # If configured, finalize the experiment record-keeping
         if rank in {-1, 0} and args.upload:

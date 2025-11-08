@@ -90,6 +90,8 @@ def select_device(device='', batch_size=0, newline=True):
     if not newline:
         s = s.rstrip()
 
+    # arg = 'cpu'
+
     return torch.device(arg)
 
 

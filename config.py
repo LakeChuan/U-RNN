@@ -16,6 +16,12 @@ def ArgumentParsers(
 
     Returns:
     - argparse.Namespace: Parsed command-line arguments with default values included if not overridden by user input.
+    创建并配置用于命令行选项的参数解析器，为实验目录和时间戳设置默认值。
+参数：
+exp_root：存储实验的默认路径。
+timestamp：用于命名实验中文件或目录的默认时间戳值。
+返回值：
+argparse.Namespace：已解析的命令行参数，若未被用户输入覆盖，则包含默认值。
     """
     description = "demo."
     parser = argparse.ArgumentParser(description)
@@ -42,7 +48,7 @@ def ArgumentParsers(
                         help="Enable the use of checkpointing to save model state intermittently.")
 
     # Training configuration
-    parser.add_argument("--seq_num", default=28, type=int,
+    parser.add_argument("--seq_num", default=2, type=int,
                         help="Window size per iteration during training.")
     parser.add_argument("--window_size", default=360, type=int,
                         help="Size of the window for each sample during training.")
@@ -78,7 +84,7 @@ def ArgumentParsers(
                         help="Factor by which the learning rate will be reduced. New_lr = lr * factor.")
 
     # Model training and loss configuration
-    parser.add_argument("--epochs", default=1000, type=int,
+    parser.add_argument("--epochs", default=1, type=int,
                         help="Total number of epochs to train.")
     parser.add_argument("--loss_name", default="FocalBCE_and_WMSE", type=str,
                         help="Name of the loss function to use for model training.")

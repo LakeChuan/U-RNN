@@ -12,6 +12,9 @@ def initialize_environment_variables():
 
     Returns:
     - tuple: Contains local_rank, rank, and world_size as integers.
+初始化并打印分布式处理相关的环境变量；若项目根目录未包含在 sys.path 中，则将其添加到 sys.path 以配置 Python 环境；返回分布式计算所需的本地秩（local_rank）、全局秩（rank）和全局进程数（world_size）。
+返回值：
+元组（tuple）：包含三个整数类型的参数，分别为 local_rank（本地秩）、rank（全局秩）、world_size（全局进程数）。
     """
     file_path = Path(__file__).resolve()
     root_path = file_path.parents[0]
